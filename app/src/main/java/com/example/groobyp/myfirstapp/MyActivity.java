@@ -1,6 +1,8 @@
 package com.example.groobyp.myfirstapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +22,13 @@ public class MyActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        String previousValue = sharedPref.getString(getString(R.string.saved_edit_box_text),"Default");
+
+        if (previousValue != null) {
+            EditText editText = (EditText) findViewById(R.id.edit_message);
+            editText.setText(previousValue);
+        }
         /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -28,6 +37,17 @@ public class MyActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });*/
+    }
+
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        EditText editText = (EditText) findViewById(R.id.edit_message);
+
+        editor.putString(getString(R.string.saved_edit_box_text), editText.getText().toString());
+        editor.commit();
     }
 
     @Override
